@@ -4,6 +4,12 @@ This is a short example program I wrote in Haskell as a potential example in an 
 
 It shows (immutable) arrays, the list/nondeterminism monad, and contains a compact recursive Trie implementation which I think highlights how compactly Haskell can express various things.
 
+## Development Velocity
+
+I wrote this solution, including the trie implementation, in less than 45 minutes. Even more dramatic, it worked flawlessly on the first actual run. The type system is so robust that there was very little room for error once the types were written down.
+
+That isn't to say I didn't make mistakes, it took a couple of passes through the compiler before I had the mistakes in the `mkTrie` implementation worked out, but the type system caught them all.
+
 ## Boggle
 
 The Boggle part itself shows the list monad and the use of an immutable array for fast indexing. It shows a compact way of enumerating the neighbours of a position in the array by scanning all the indices of the array for those which are sufficiently close.
