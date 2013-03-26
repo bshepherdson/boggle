@@ -12,25 +12,26 @@ import Trie
 
 type Board = Array (Int, Int) Char
 
-adjacent :: (Int, Int) -> (Int, Int) -> Bool
-adjacent (a,b) (c,d) = close (a-c) && close (b-d)
-  where close x = abs x <= 1
+neighbours :: (Int, Int) -> [(Int, Int)]
+neighbours (x,y) =
+    [ p | i <- [-1,0,1], j <- [-1,0,1],
+        (i, j) /= (0, 0), let p = (x+i, y+j) ]
 
-neighbours :: Board -> (Int, Int) -> [(Int, Int)]
-neighbours board point = filter (/= point) $ filter (adjacent point) (indices board)
-
-search :: Trie -> Board -> String -> (Int, Int) -> [String]
-search dict board str point = do
-  adj <- neighbours board point
+search :: Trie -> Board -> String -> [(Int, Int)] -> (Int, Int) -> [String]
+search dict board str used point = do
+  adj <- neighbours point
+  -- adj takes on the value of each neighbour in turn as we run the below.
+  guard $ inRange (bounds board) adj -- short-circuits and returns []
+  guard (adj `elem` used)
   let str' = str ++ [board ! adj]
-  guard $ isPrefix dict str' -- short-circuits and returns []
-  let childWords = search dict board str' adj
+  guard $ isPrefix dict str'
+  let childWords = search dict board str' (point:used) adj
   if isWord dict str'
     then str' : childWords
     else childWords
 
 boggle :: Trie -> Board -> [String]
-boggle dict board = concatMap (search dict board []) (indices board)
+boggle dict board = concatMap (search dict board [] []) (indices board)
 
 
 main :: IO ()
